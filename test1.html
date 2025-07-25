@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morocco 1552: Crossroads of Commerce & Conflict</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9F4F0;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="text-[#3A3D5E]">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-black text-[#FF6B6B] text-shadow">Morocco, 1552</h1>
+            <p class="text-xl md:text-2xl font-bold text-[#4ECDC4] mt-2">Crossroads of Commerce & Conflict</p>
+            <p class="max-w-3xl mx-auto mt-4 text-lg">In the mid-16th century, Morocco was not one kingdom, but a fractured land of competing powers. This infographic explores the dynamic and volatile economy of the era, focusing on the marketplaces around the Portuguese fortress of Mazagan, where empires clashed and merchants navigated a world of risk and opportunity.</p>
+        </header>
+
+        <main>
+            <section id="political-landscape" class="my-16">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#3A3D5E]">A Fractured Kingdom</h2>
+                <p class="text-center max-w-2xl mx-auto mb-8">Three major forces vied for control, creating a complex political and economic landscape. The old Wattasid dynasty was fading, the new Saadian dynasty was rising on a wave of holy war, and the Portuguese clung to fortified coastal enclaves.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-t-8 border-[#FF6B6B]">
+                        <h3 class="text-2xl font-bold mb-2">The Fading Wattasids</h3>
+                        <p class="text-6xl mb-2">쇠</p>
+                        <p>Ruling from Fez, their power was crumbling due to an inability to repel foreign invaders. They controlled the north but were economically and militarily weak.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-t-8 border-[#4ECDC4]">
+                        <h3 class="text-2xl font-bold mb-2">The Rising Saadians</h3>
+                        <p class="text-6xl mb-2">✦</p>
+                        <p>Emerging from the south, they championed a holy war (*jihad*) against the Portuguese, capturing Marrakesh and unifying the southern tribes with wealth from trans-Saharan trade.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-t-8 border-[#45B7D1]">
+                        <h3 class="text-2xl font-bold mb-2">The Portuguese Enclaves</h3>
+                        <p class="text-6xl mb-2">✚</p>
+                        <p>Fortified coastal cities like Mazagan functioned as military bases and trade hubs (*feitorias*), projecting Portuguese power and depending on local trade for survival.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="economic-engines" class="my-20">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#3A3D5E]">The Economic Engines of War</h2>
+                <p class="text-center max-w-2xl mx-auto mb-8">The conflict was fueled by two different economic systems. The Saadians' control of high-value trade gave them the financial power to challenge the agrarian-based Wattasids and the Portuguese.</p>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="chart-container mx-auto h-[450px] md:h-[400px]">
+                        <canvas id="economicFoundationsChart"></canvas>
+                    </div>
+                     <p class="text-center mt-4 text-sm text-gray-600">This chart illustrates the estimated economic composition of the rival Moroccan dynasties. The Saadians' access to high-value trade goods like gold and salt gave them a significant advantage over the agriculture-dependent Wattasids.</p>
+                </div>
+            </section>
+            
+            <section id="souk-goods" class="my-20">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#3A3D5E]">A Day at the Souk</h2>
+                <p class="text-center max-w-2xl mx-auto mb-8">In a frontier market near Mazagan, a vibrant mix of goods could be found. Stalls overflowed with local produce, artisan crafts, and precious commodities from the far-reaching caravan routes.</p>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="chart-container mx-auto">
+                        <canvas id="marketGoodsChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-sm text-gray-600">The bar chart shows the variety of goods available. While daily life depended on local agriculture and crafts, high-value trade goods like Saharan salt and southern dates were crucial to the wider economy.</p>
+                </div>
+            </section>
+
+            <section id="currency-chaos" class="my-20">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#3A3D5E]">The Currency of Conflict</h2>
+                <p class="text-center max-w-2xl mx-auto mb-8">There was no single currency. The political divisions created a chaotic monetary environment where multiple coinages circulated, making barter common and money-changers essential.</p>
+                 <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="chart-container mx-auto h-[450px] md:h-[400px]">
+                        <canvas id="currencyChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-sm text-gray-600">This bubble chart represents the co-circulation of different currencies. The size of the bubble indicates its primary sphere of influence. In frontier zones like Doukkala, all these coins might be present, leading to complex exchanges.</p>
+                </div>
+            </section>
+
+            <section id="trade-flow" class="my-20">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#3A3D5E]">Uneasy Commerce at the Fortress Gates</h2>
+                <p class="text-center max-w-2xl mx-auto mb-8">Despite the official state of war, a pragmatic and continuous trade existed between Moroccans and the Portuguese at Mazagan. This created a complex "war economy" where the lines between patriot and collaborator were dangerously blurred.</p>
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 md:space-x-8">
+                        <div class="w-full md:w-2/5 text-center">
+                            <h4 class="text-xl font-bold text-[#4ECDC4] mb-2">Moroccan Offerings</h4>
+                            <div class="bg-[#4ECDC4] bg-opacity-10 rounded-lg p-4">
+                                <p>🌾 Wheat & Barley</p>
+                                <p>🐎 Horses & Livestock</p>
+                                <p>🐑 Wool & Hides</p>
+                                <p>🐟 Fish</p>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full md:w-1/5 flex justify-center items-center">
+                            <div class="text-4xl font-bold text-[#3A3D5E] animate-pulse">⇄</div>
+                        </div>
+
+                        <div class="w-full md:w-2/5 text-center">
+                            <h4 class="text-xl font-bold text-[#FF6B6B] mb-2">Portuguese Goods</h4>
+                            <div class="bg-[#FF6B6B] bg-opacity-10 rounded-lg p-4">
+                                <p>👕 European Cloth</p>
+                                <p>🔗 Metalware & Beads</p>
+                                <p>🔫 Firearms (Clandestine)</p>
+                                <p>💣 Gunpowder (Clandestine)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md">
+                        <h4 class="font-bold">The Collaborator Question</h4>
+                        <p>A Moroccan trading with the Portuguese could be seen as a pragmatic survivor, an opportunistic merchant, or a traitor to the Saadian cause of *jihad*. Perception depended entirely on the observer's allegiance.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 py-8 border-t border-gray-300">
+            <p class="text-gray-600">This infographic visualizes the complex socio-economic landscape of 16th-century Morocco based on historical research. The period's fragmentation set the stage for the unified and powerful Saadian empire that would follow.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const wrapLabel = (label, maxWidth) => {
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 < maxWidth) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        };
+        
+        const processLabels = (labels) => {
+            return labels.map(label => {
+                if(label.length > 16) {
+                    return wrapLabel(label, 16);
+                }
+                return label;
+            });
+        };
+
+        const palette = {
+            red: '#FF6B6B',
+            teal: '#4ECDC4',
+            blue: '#45B7D1',
+            dark: '#3A3D5E',
+            yellow: '#FFE66D',
+            light: '#F9F4F0'
+        };
+
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: palette.dark,
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: palette.dark,
+                    titleColor: palette.light,
+                    bodyColor: palette.light,
+                    padding: 10,
+                    cornerRadius: 5
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: palette.dark },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                },
+                x: {
+                    ticks: { color: palette.dark },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('economicFoundationsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Wattasid North', 'Saadian South'],
+                datasets: [{
+                    label: 'Agriculture (Grains, Livestock)',
+                    data: [80, 40],
+                    backgroundColor: palette.teal,
+                }, {
+                    label: 'High-Value Trade (Gold, Salt, Sugar)',
+                    data: [10, 60],
+                    backgroundColor: palette.yellow,
+                },
+                {
+                    label: 'Local Crafts & Manufacturing',
+                    data: [10, 10],
+                    backgroundColor: palette.blue,
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                scales: {
+                    x: { stacked: true, ticks: { color: palette.dark }, grid: { display: false } },
+                    y: { stacked: true, ticks: { callback: value => value + '%', color: palette.dark }, grid: { color: 'rgba(0, 0, 0, 0.05)' } }
+                },
+                 plugins: {
+                    ...commonChartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Estimated Economic Foundations: Wattasids vs. Saadians',
+                        color: palette.dark,
+                        font: { size: 16 }
+                    }
+                }
+            }
+        });
+        
+        const marketGoodsLabels = processLabels(['Grains & Bread', 'Vegetables & Fruits', 'Meat & Dairy', 'Fish (Fresh & Salted)', 'Textiles & Rugs', 'Leather Goods', 'Pottery & Metalwork', 'Saharan Salt', 'Dates & Spices']);
+        new Chart(document.getElementById('marketGoodsChart'), {
+            type: 'bar',
+            data: {
+                labels: marketGoodsLabels,
+                datasets: [{
+                    label: 'Relative Availability in a Doukkala Souk',
+                    data: [95, 80, 85, 70, 60, 65, 55, 90, 75],
+                    backgroundColor: [palette.teal, palette.teal, palette.teal, palette.teal, palette.blue, palette.blue, palette.blue, palette.yellow, palette.yellow],
+                    borderColor: palette.dark,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                indexAxis: 'y',
+                plugins: {
+                    ...commonChartOptions.plugins,
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Goods Available in a Frontier Market',
+                        color: palette.dark,
+                        font: { size: 16 }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: palette.dark }, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                    y: { ticks: { color: palette.dark }, grid: { display: false } }
+                }
+            }
+        });
+        
+        const currencyLabels = processLabels(['Wattasid Dirham (Silver/Copper)', 'Saadian Dirham (Silver)', 'Portuguese Real & Cruzado', 'Spanish Coins', 'Commodity Money (e.g., Salt, Cloth)', 'Direct Barter']);
+        new Chart(document.getElementById('currencyChart'), {
+            type: 'bubble',
+            data: {
+                labels: currencyLabels,
+                datasets: [{
+                    label: 'Wattasid Coins',
+                    data: [{x: 2, y: 5, r: 25}],
+                    backgroundColor: palette.red,
+                }, {
+                    label: 'Saadian Coins',
+                    data: [{x: 4, y: 6, r: 35}],
+                    backgroundColor: palette.teal,
+                }, {
+                    label: 'Portuguese Coins',
+                    data: [{x: 6, y: 4, r: 20}],
+                    backgroundColor: palette.blue,
+                }, {
+                    label: 'Spanish & Other Foreign Coins',
+                    data: [{x: 7, y: 7, r: 15}],
+                    backgroundColor: '#C34A36',
+                }, {
+                    label: 'Commodity Money (Salt)',
+                    data: [{x: 3, y: 8, r: 30}],
+                    backgroundColor: palette.yellow
+                },
+                {
+                    label: 'Direct Barter',
+                    data: [{x: 5, y: 3, r: 40}],
+                    backgroundColor: '#A9A9A9'
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                plugins: {
+                    ...commonChartOptions.plugins,
+                    title: {
+                        display: true,
+                        text: 'Circulating Currencies & Exchange Methods',
+                        color: palette.dark,
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                return label;
+                            },
+                            title: tooltipTitleCallback
+                        }
+                    }
+                },
+                scales: {
+                    y: { display: false, min: 0, max: 12 },
+                    x: { display: false, min: 0, max: 10 }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
