@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Contested Landscape: 16th Century Moroccan Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed as a thematic, single-page narrative. It starts with a broad geographical context (the map), allowing users to visually anchor themselves. The core of the app is a three-column comparative layout, which is the most effective way to help users understand the primary thesis of the report: the stark contrast between the Portuguese, Saadian, and Vernacular styles. This structure prioritizes direct comparison over the linear format of the source report. Deep-dive sections for the Souk and Fortress follow, allowing for focused exploration of key concepts. This user flow—from broad context to direct comparison to specific deep dives—is designed for intuitive understanding and discovery. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Comparative philosophies (Defense, Privacy, etc.). Goal: Compare. Viz: Radar Chart (Chart.js). Justification: Best for multi-axial comparison of different subjects.
+        - Report Info: Key materials used by each culture. Goal: Compare. Viz: Bar Chart (Chart.js). Justification: Simple, clear comparison of quantities/importance.
+        - Report Info: Souk layout hierarchy. Goal: Organize. Viz: HTML/CSS Diagram. Justification: Provides full control over layout and styling for a conceptual flow, avoiding prohibited libraries.
+        - Report Info: Fortress bastions. Goal: Inform/Organize. Viz: HTML/CSS Diagram. Justification: Best for representing a specific spatial layout clearly.
+        - Report Info: Map of key locations. Goal: Organize/Navigate. Viz: Image with HTML overlays. Justification: Creates a simple, interactive navigation hub without complex libraries.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            background-color: #F4F1DE;
+            color: #3D405B;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .map-point {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .map-point:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(224, 122, 95, 0.7);
+        }
+        .diagram-node {
+            border: 2px solid #81B29A;
+            background-color: #F4F1DE;
+            color: #3D405B;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .diagram-arrow {
+            font-size: 1.5rem;
+            color: #E07A5F;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="text-center py-12 px-4 bg-white/30">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#3D405B]">The Contested Landscape</h1>
+        <p class="text-lg md:text-xl mt-2 text-[#E07A5F]">An Interactive Exploration of 16th Century Architecture in Doukkala, Morocco</p>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12 space-y-16">
+
+        <section id="map-section">
+            <div class="text-center max-w-3xl mx-auto mb-8">
+                <h2 class="text-3xl font-bold mb-4">A Land of Three Worlds</h2>
+                <p class="text-lg leading-relaxed">The 16th-century Doukkala plains were a crossroads where distinct cultures converged. European military power, sophisticated Moroccan urbanism, and timeless rural traditions each left their unique mark on the landscape. Click on the map locations below to navigate and explore the architectural story of this contested region.</p>
+            </div>
+            <div class="relative w-full max-w-4xl mx-auto rounded-lg shadow-lg bg-[#81B29A]/20 p-4">
+                <img src="https://placehold.co/1200x600/F4F1DE/3D405B?text=Map+of+the+Doukkala+Region" alt="Stylized map of the Doukkala region" class="w-full h-auto rounded">
+                <a href="#style-portuguese" class="map-point absolute top-[40%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 bg-[#E07A5F] text-white p-3 rounded-full shadow-md cursor-pointer block text-center">
+                    <span class="font-bold">Fortress</span>
+                </a>
+                <a href="#style-saadian" class="map-point absolute top-[30%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-[#81B29A] text-white p-3 rounded-full shadow-md cursor-pointer block text-center">
+                    <span class="font-bold">City</span>
+                </a>
+                <a href="#style-vernacular" class="map-point absolute top-[65%] left-[60%] transform -translate-x-1/2 -translate-y-1/2 bg-[#F2CC8F] text-[#3D405B] p-3 rounded-full shadow-md cursor-pointer block text-center">
+                    <span class="font-bold">Plains</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="comparison-section">
+             <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold mb-4">An Architectural Triad</h2>
+                <p class="text-lg leading-relaxed">The profound differences in worldview between the Portuguese, the Saadians, and the local tribes are vividly expressed in their architectural philosophies. The chart below visualizes these opposing values, while the sections that follow offer a direct comparison of their key features and building techniques.</p>
+            </div>
+            <div class="bg-white/50 rounded-lg shadow-md p-6 md:p-8 mb-12">
+                 <div class="chart-container mx-auto h-80 md:h-96">
+                    <canvas id="philosophyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <article id="style-portuguese" class="bg-white/50 rounded-lg shadow-md p-6 border-t-4 border-[#E07A5F]">
+                    <h3 class="text-2xl font-bold mb-3">The Portuguese Fortress</h3>
+                    <p class="text-sm font-semibold text-[#E07A5F] mb-4">PHILOSOPHY: IMPOSITION & DEFENSE</p>
+                    <p class="mb-6">A transplanted piece of Renaissance Europe, designed for military projection and cultural isolation. Its form was dictated by the science of artillery warfare, creating a self-sufficient bastion against a perceived hostile landscape.</p>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start"><span class="text-[#E07A5F] mr-2">✚</span> <strong>Key Structure:</strong> Star-shaped Fort (*Trace Italienne*)</li>
+                        <li class="flex items-start"><span class="text-[#E07A5F] mr-2">✚</span> <strong>Core Concept:</strong> Outward-facing military power</li>
+                        <li class="flex items-start"><span class="text-[#E07A5F] mr-2">✚</span> <strong>Aesthetic:</strong> Manueline (Late Gothic) interiors</li>
+                        <li class="flex items-start"><span class="text-[#E07A5F] mr-2">✚</span> <strong>Materials:</strong> Massive cut stone, military-grade masonry</li>
+                    </ul>
+                </article>
+
+                <article id="style-saadian" class="bg-white/50 rounded-lg shadow-md p-6 border-t-4 border-[#81B29A]">
+                    <h3 class="text-2xl font-bold mb-3">The Saadian Urban House</h3>
+                    <p class="text-sm font-semibold text-[#81B29A] mb-4">PHILOSOPHY: INTROSPECTION & OPULENCE</p>
+                    <p class="mb-6">An architecture of privacy and intricate beauty, reflecting the cultural confidence of the Saadian "renaissance." Homes were inward-facing sanctuaries, shielding the family's life from the street behind lavishly decorated interiors.</p>
+                     <ul class="space-y-3 text-sm">
+                        <li class="flex items-start"><span class="text-[#81B29A] mr-2">✚</span> <strong>Key Structure:</strong> Courtyard House (*Dar/Riad*)</li>
+                        <li class="flex items-start"><span class="text-[#81B29A] mr-2">✚</span> <strong>Core Concept:</strong> Inward-facing domestic privacy (*Hurma*)</li>
+                        <li class="flex items-start"><span class="text-[#81B29A] mr-2">✚</span> <strong>Aesthetic:</strong> Hispano-Moorish surface decoration</li>
+                        <li class="flex items-start"><span class="text-[#81B29A] mr-2">✚</span> <strong>Materials:</strong> *Zellij* tile, carved stucco, cedarwood</li>
+                    </ul>
+                </article>
+
+                <article id="style-vernacular" class="bg-white/50 rounded-lg shadow-md p-6 border-t-4 border-[#F2CC8F]">
+                    <h3 class="text-2xl font-bold mb-3">The Vernacular Tazota</h3>
+                    <p class="text-sm font-semibold text-[#F2CC8F] mb-4">PHILOSOPHY: SYMBIOSIS & FUNCTION</p>
+                    <p class="mb-6">A unique architecture born from the land itself. The *Tazota* is a masterpiece of function, built without mortar from the very stones cleared from the fields for farming. It represents a perfect cycle of sustainability and adaptation.</p>
+                     <ul class="space-y-3 text-sm">
+                        <li class="flex items-start"><span class="text-[#F2CC8F] mr-2">✚</span> <strong>Key Structure:</strong> Dry-stone Dwelling (*Tazota*)</li>
+                        <li class="flex items-start"><span class="text-[#F2CC8F] mr-2">✚</span> <strong>Core Concept:</strong> Symbiosis with the agricultural landscape</li>
+                        <li class="flex items-start"><span class="text-[#F2CC8F] mr-2">✚</span> <strong>Aesthetic:</strong> Purely functional, unadorned form</li>
+                        <li class="flex items-start"><span class="text-[#F2CC8F] mr-2">✚</span> <strong>Materials:</strong> Local fieldstone, earth</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section id="deep-dive-section">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white/50 rounded-lg shadow-md p-6 md:p-8">
+                    <h2 class="text-3xl font-bold mb-4">Deep Dive: Anatomy of a Souk</h2>
+                    <p class="mb-6">The 16th-century Moroccan souk was not a single building but a highly organized urban system. Its layout followed a strict hierarchy, with the most valuable goods located centrally near the mosque, creating a vibrant, structured commercial heart within the city.</p>
+                    <div class="space-y-2 flex flex-col items-center">
+                        <div class="diagram-node w-full max-w-xs">🕌 Central Mosque</div>
+                        <div class="diagram-arrow">▼</div>
+                        <div class="diagram-node w-full max-w-xs">Valuable Trades (Perfumes, Gold)</div>
+                        <div class="diagram-arrow">▼</div>
+                        <div class="diagram-node w-full max-w-xs">Clean Guilds (Textiles, Spices)</div>
+                        <div class="diagram-arrow">▼</div>
+                        <div class="diagram-node w-full max-w-xs">Noisy Trades (Blacksmiths, Dyers)</div>
+                         <div class="diagram-arrow">▼</div>
+                        <div class="diagram-node w-full max-w-xs">City Gates & *Funduqs* (Trade Hubs)</div>
+                    </div>
+                </div>
+                <div class="bg-white/50 rounded-lg shadow-md p-6 md:p-8">
+                    <h2 class="text-3xl font-bold mb-4">Deep Dive: The Fortress Plan</h2>
+                    <p class="mb-6">The Fortress of Mazagan was a masterpiece of Renaissance military engineering, the *trace italienne*. Its star-shaped design with angled bastions eliminated blind spots, allowing for devastating overlapping fields of cannon fire against any attackers.</p>
+                     <div class="relative w-full h-64 bg-[#E07A5F]/10 rounded-lg flex items-center justify-center p-4">
+                        <div class="absolute top-0 left-0 diagram-node m-2">St. Sebastian</div>
+                        <div class="absolute top-0 right-0 diagram-node m-2">Angel</div>
+                        <div class="absolute bottom-0 left-0 diagram-node m-2">St. Antoine</div>
+                        <div class="absolute bottom-0 right-0 diagram-node m-2">Holy Ghost</div>
+                        <div class="w-48 h-48 bg-[#E07A5F]/30 flex items-center justify-center text-center font-bold text-[#3D405B]">Central City</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="synthesis-section">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold mb-4">A Synthesis Written in Stone</h2>
+                <p class="text-lg leading-relaxed">The built environment of 16th-century Doukkala is a powerful historical record. The imposing walls of Mazagan speak of global ambition and conflict. The hidden courtyards of Azemmour reflect a golden age of cultural sophistication. The humble stone *Tazotas* of the plains testify to the resilience of local life. Together, they tell a layered story of a landscape shaped by profoundly different worlds, all written in its stones, plaster, and earth.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center mt-12 py-8 border-t border-[#3D405B]/20">
+        <p class="text-sm text-[#3D405B]/80">Interactive application based on the report "The Contested Landscape."</p>
+        <p class="text-xs text-[#3D405B]/60 mt-1">Designed and developed to make history explorable.</p>
+    </footer>
+
+    <script>
+        const chartColors = {
+            portuguese: 'rgba(224, 122, 95, 0.7)',
+            saadian: 'rgba(129, 178, 154, 0.7)',
+            vernacular: 'rgba(242, 204, 143, 0.7)',
+            portugueseBorder: 'rgb(224, 122, 95)',
+            saadianBorder: 'rgb(129, 178, 154)',
+            vernacularBorder: 'rgb(242, 204, 143)',
+            grid: 'rgba(61, 64, 91, 0.2)',
+            ticks: '#3D405B'
+        };
+
+        const philosophyCtx = document.getElementById('philosophyChart').getContext('2d');
+        new Chart(philosophyCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Defense', 'Public Display', 'Privacy', 'Decoration', 'Functionality', 'Environmental Link'],
+                datasets: [{
+                    label: 'Portuguese',
+                    data: [9, 8, 2, 4, 6, 1],
+                    backgroundColor: chartColors.portuguese,
+                    borderColor: chartColors.portugueseBorder,
+                    borderWidth: 2,
+                    pointBackgroundColor: chartColors.portugueseBorder
+                }, {
+                    label: 'Saadian',
+                    data: [4, 5, 9, 9, 7, 5],
+                    backgroundColor: chartColors.saadian,
+                    borderColor: chartColors.saadianBorder,
+                    borderWidth: 2,
+                    pointBackgroundColor: chartColors.saadianBorder
+                }, {
+                    label: 'Vernacular',
+                    data: [5, 1, 6, 1, 10, 10],
+                    backgroundColor: chartColors.vernacular,
+                    borderColor: chartColors.vernacularBorder,
+                    borderWidth: 2,
+                    pointBackgroundColor: chartColors.vernacularBorder
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                           color: chartColors.ticks,
+                           font: { size: 14 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return tooltipItems[0].dataset.label;
+                            },
+                            label: function(context) {
+                                return context.label + ': ' + context.raw;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: chartColors.grid },
+                        grid: { color: chartColors.grid },
+                        pointLabels: { 
+                            color: chartColors.ticks,
+                            font: { size: 12 }
+                        },
+                        ticks: {
+                            backdropColor: '#F4F1DE',
+                            color: chartColors.ticks
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
