@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflict & Culture: Morocco in the Age of Transition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Desert Sands & Royal Hues -->
+    <!-- Application Structure Plan: A thematic, multi-section SPA with top-level navigation (The Dynasties, The Armies, The People, The Symbols). This non-linear structure allows users to explore topics of interest directly. The core is 'The Armies' section, which uses interactive toggle buttons and a radar chart for direct, dynamic comparison, which is more engaging than a static table. Tabs and clickable cards are used for 'The People' to organize detailed content without cluttering the UI. This design prioritizes user-driven exploration over the linear flow of the source report, making the complex history more accessible and understandable. -->
+    <!-- Visualization & Content Choices: 1. Military Comparison -> Goal: Compare -> Viz: Chart.js Radar Chart -> Interaction: Toggle buttons to update chart data -> Justification: Radar charts excel at showing strengths/weaknesses across multiple categories for two or more subjects, perfect for the Wattasid/Saadian military comparison. Library: Chart.js (Canvas). 2. Force Composition -> Goal: Organize -> Viz: HTML/CSS Diagram -> Interaction: Updates with army toggle -> Justification: A simple visual hierarchy built with flexbox is clearer and faster than a text list. Method: HTML/CSS. 3. Clothing Glossary -> Goal: Inform -> Viz: Interactive Cards -> Interaction: Click to expand/show details -> Justification: Hides detailed text initially for a cleaner UI, letting users drill down on items of interest. Method: HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Mulish', sans-serif;
+            background-color: #FDF8F0; /* Warm Neutral */
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Marcellus', serif;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #844D36; /* Accent Brown */
+            border-bottom-color: #844D36;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .army-toggle.active {
+            background-color: #4A5568; /* Dark Slate */
+            color: #FDF8F0;
+        }
+        .tab-button.active {
+            background-color: #BF8B67; /* Muted Accent */
+            color: #FDF8F0;
+        }
+        .timeline-point {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .timeline-point:hover {
+            transform: scale(1.1);
+        }
+        .timeline-point.highlighted .absolute {
+             background-color: #844D36;
+        }
+        .timeline-point.highlighted .text-sm {
+            font-weight: bold;
+            color: #844D36;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flag-canvas {
+            border: 1px solid #D1C4B0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-[#FDF8F0] py-6 px-4 md:px-8 text-center shadow-md sticky top-0 z-50">
+        <h1 class="text-3xl md:text-5xl font-display text-[#4A5568]">Morocco in Transition</h1>
+        <p class="text-lg md:text-xl text-[#844D36] mt-1">The Wattasid-Saadian Conflict (c. 1524-1554)</p>
+        <nav class="mt-4">
+            <ul class="flex justify-center space-x-4 md:space-x-8 text-lg">
+                <li><a href="#dynasties" class="nav-link p-2 active">The Dynasties</a></li>
+                <li><a href="#armies" class="nav-link p-2">The Armies</a></li>
+                <li><a href="#people" class="nav-link p-2">The People</a></li>
+                <li><a href="#symbols" class="nav-link p-2">The Symbols</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="p-4 md:p-8">
+        <!-- Section: The Dynasties -->
+        <section id="dynasties" class="content-section active">
+            <div class="text-center max-w-4xl mx-auto mb-12">
+                <h2 class="text-3xl md:text-4xl font-display text-[#4A5568] mb-4">A Realm Divided</h2>
+                <p class="text-lg text-gray-700">The mid-16th century was a crucible for Morocco, a time of profound change defined by the clash between a fading dynasty and a rising power. This section explores the political landscape, where the declining Wattasids, seen as failing defenders of the faith, were challenged by the ascendant Saadians, who championed a powerful message of holy war and religious renewal. Their struggle was not just for land, but for the very soul of the nation.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+                <article id="wattasid-context" class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-display text-center text-blue-900 mb-4">The Waning Wattasids</h3>
+                    <p class="text-gray-600 mb-4">By 1550, the Wattasid dynasty was in terminal decline. From their capital in Fez, they controlled only northern Morocco. Their legitimacy crumbled as they pursued a policy of appeasement towards Portuguese and Spanish invaders, who had occupied key coastal ports. This failure to defend the realm led to economic stagnation and a crisis of confidence, creating a power vacuum that their rivals were eager to fill.</p>
+                    <ul class="space-y-2 list-disc list-inside text-gray-700">
+                        <li><strong class="font-semibold">Legitimacy Crisis:</strong> Perceived as ineffective and failing in their duty to protect against Christian encroachment.</li>
+                        <li><strong class="font-semibold">Territorial Loss:</strong> Authority confined to the north, with southern Morocco fragmented and coastal ports lost.</li>
+                        <li><strong class="font-semibold">Economic Decline:</strong> Loss of trade routes to the Portuguese crippled the state's finances.</li>
+                    </ul>
+                </article>
+                <article id="saadian-context" class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-display text-center text-red-800 mb-4">The Rising Saadians</h3>
+                    <p class="text-gray-600 mb-4">Emerging from the Sous Valley, the Saadians built their power on a potent combination of military success and superior religious authority. As *shurafa* (descendants of the Prophet), they held a powerful claim to leadership. They channeled this into a successful *jihad* against the Portuguese, capturing the key fort of Agadir in 1541. This victory cemented their status as the true defenders of Islam and galvanized popular support across Morocco.</p>
+                     <ul class="space-y-2 list-disc list-inside text-gray-700">
+                        <li><strong class="font-semibold">Sharifian Legitimacy:</strong> Claimed direct descent from the Prophet, a powerful source of authority.</li>
+                        <li><strong class="font-semibold">Military Prowess:</strong> Led a successful holy war (*jihad*) against the Portuguese, retaking key territories.</li>
+                        <li><strong class="font-semibold">Popular Support:</strong> Seen as heroes and saviors, unifying tribes under the banner of resistance.</li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="mt-16 max-w-5xl mx-auto">
+                 <h3 class="text-2xl font-display text-center text-[#4A5568] mb-8">Timeline of the Transition</h3>
+                 <div class="relative">
+                    <div class="absolute left-1/2 w-0.5 h-full bg-gray-300 -translate-x-1/2"></div>
+                    <div id="timeline-container" class="space-y-12">
+                        <!-- Timeline points will be injected by JS -->
+                    </div>
+                 </div>
+                 <div id="timeline-details" class="mt-8 p-6 bg-white rounded-lg shadow-lg text-center min-h-[100px]">
+                    <p class="text-gray-700">Click on a date to see details about the event.</p>
+                 </div>
+            </div>
+        </section>
+
+        <!-- Section: The Armies -->
+        <section id="armies" class="content-section">
+            <div class="text-center max-w-4xl mx-auto mb-12">
+                <h2 class="text-3xl md:text-4xl font-display text-[#4A5568] mb-4">Forged in Fire: The Opposing Forces</h2>
+                <p class="text-lg text-gray-700">The fate of Morocco was decided on the battlefield, where two vastly different military philosophies collided. In this section, you can directly compare the armies of the Wattasids and the Saadians. Use the buttons below to switch your view and see how the traditional, cavalry-based Wattasid host measured up against the Saadians' modern, gunpowder-fueled war machine. Explore their composition, technology, and tactics to understand why one fell and the other triumphed.</p>
+            </div>
+            
+            <div class="flex justify-center space-x-4 mb-8">
+                <button id="wattasid-toggle" class="army-toggle px-6 py-2 rounded-md font-semibold text-lg transition-colors duration-300 bg-gray-200 text-gray-800">Wattasid Host</button>
+                <button id="saadian-toggle" class="army-toggle px-6 py-2 rounded-md font-semibold text-lg transition-colors duration-300 bg-gray-200 text-gray-800">Saadian Force</button>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 id="army-composition-title" class="text-2xl font-display text-center mb-4"></h3>
+                    <div id="army-composition-content" class="space-y-4"></div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-display text-center mb-4">Comparative Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="armyComparisonChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 id="army-kit-title" class="text-2xl font-display text-center mb-4"></h3>
+                    <div id="army-kit-content" class="grid grid-cols-2 gap-4 text-center"></div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 id="army-sw-title" class="text-2xl font-display text-center mb-4"></h3>
+                    <div id="army-sw-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The People -->
+        <section id="people" class="content-section">
+            <div class="text-center max-w-4xl mx-auto mb-12">
+                <h2 class="text-3xl md:text-4xl font-display text-[#4A5568] mb-4">The Fabric of Life</h2>
+                <p class="text-lg text-gray-700">Beyond the battlefield, the clothing of 16th-century Moroccans tells a rich story of status, tradition, and daily life. This section explores the attire of the era, from the luxurious kaftans of the urban elite to the practical, traditional garments of the common people in regions like Doukkala, near the Portuguese-held city of Mazagan. Use the tabs to navigate between the different social strata and discover the garments that defined them.</p>
+            </div>
+            
+            <div class="max-w-5xl mx-auto">
+                <div class="flex justify-center border-b-2 border-gray-200 mb-8">
+                    <button data-tab="elite" class="tab-button text-xl px-6 py-3 -mb-0.5 font-display">Elite Wardrobe</button>
+                    <button data-tab="commoner" class="tab-button text-xl px-6 py-3 -mb-0.5 font-display">Commoner's Attire</button>
+                </div>
+
+                <div id="elite" class="clothing-tab-content">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Clothing cards will be injected by JS -->
+                    </div>
+                </div>
+
+                <div id="commoner" class="clothing-tab-content hidden">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Clothing cards will be injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Symbols -->
+        <section id="symbols" class="content-section">
+            <div class="text-center max-w-4xl mx-auto mb-12">
+                <h2 class="text-3xl md:text-4xl font-display text-[#4A5568] mb-4">Banners of Power</h2>
+                <p class="text-lg text-gray-700">In an age of dynastic struggle, flags were potent symbols of legitimacy, heritage, and military identity. They were not mere decoration, but powerful statements on the battlefield and in the royal court. This section examines the banners associated with the Wattasids and Saadians, revealing a complex visual language of power. Explore the different flags they may have used, from royal standards to state banners, and understand the political messages they were designed to convey.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 max-w-7xl mx-auto">
+                <article>
+                    <h3 class="text-2xl font-display text-center text-blue-900 mb-6">The Wattasid Standard</h3>
+                    <p class="text-gray-600 mb-6">The exact Wattasid banner is uncertain. As successors to the Marinids, they likely continued using established state symbols. This could have been a red flag with an eight-pointed star, representing the state of Fez, or a white banner, the traditional color of the Marinid royal house. The army would have also used various colored flags for different units.</p>
+                    <div class="flex flex-col items-center space-y-8">
+                        <div>
+                            <h4 class="text-lg font-semibold text-center mb-2">Possible State Flag</h4>
+                            <canvas id="wattasidFlag1" width="240" height="160" class="flag-canvas"></canvas>
+                            <p class="text-center text-sm mt-2 text-gray-500">Red field with gold 8-pointed star.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-center mb-2">Possible Royal Color</h4>
+                            <canvas id="wattasidFlag2" width="240" height="160" class="flag-canvas"></canvas>
+                            <p class="text-center text-sm mt-2 text-gray-500">Plain white banner, a Marinid tradition.</p>
+                        </div>
+                    </div>
+                </article>
+                <article>
+                    <h3 class="text-2xl font-display text-center text-red-800 mb-6">The Saadian Banner</h3>
+                    <p class="text-gray-600 mb-6">The Saadians employed a sophisticated hierarchy of flags. While they may have used the red state flag, their primary royal standard was the *al-'alam al-mansûr* ("the Victorious Banner"). This was a white silk flag, often embroidered with gold Qur'anic verses. By adopting this old Marinid symbol of honor, the Saadians positioned themselves as the true, legitimate heirs to the Moroccan sultanate, bypassing the Wattasids entirely.</p>
+                    <div class="flex flex-col items-center space-y-8">
+                        <div>
+                            <h4 class="text-lg font-semibold text-center mb-2">The Royal Standard</h4>
+                            <canvas id="saadianFlag1" width="240" height="160" class="flag-canvas"></canvas>
+                            <p class="text-center text-sm mt-2 text-gray-500">The white *al-'alam al-mansûr*.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-center mb-2">Possible State Flag</h4>
+                            <canvas id="saadianFlag2" width="240" height="160" class="flag-canvas"></canvas>
+                            <p class="text-center text-sm mt-2 text-gray-500">Red field with gold 8-pointed star.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 mt-12 bg-gray-200">
+        <p class="text-gray-600">An interactive exploration based on historical research of 16th-century Morocco.</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        const armyData = {
+            wattasid: {
+                compositionTitle: 'Wattasid Host: The Old Guard',
+                composition: `
+                    <div class="border-l-4 border-blue-500 pl-4 mb-4">
+                        <h4 class="font-bold text-lg">Tribal Levies</h4>
+                        <p class="text-gray-600">The backbone of the army, primarily Zenata Berber cavalry. Their loyalty was often conditional and service seasonal, making them unreliable for long campaigns.</p>
+                    </div>
+                    <div class="border-l-4 border-blue-500 pl-4 mb-4">
+                        <h4 class="font-bold text-lg">Makhzaniyyah (Elite Guard)</h4>
+                        <p class="text-gray-600">A small, professional corps of salaried cavalry serving as the Sultan's guard and frontier defense. A continuation of the Marinid system.</p>
+                    </div>
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="font-bold text-lg">Foreign Specialists</h4>
+                        <p class="text-gray-600">Included Granadan advisors and European renegades ('elchees') who were often employed to operate the army's limited artillery.</p>
+                    </div>
+                `,
+                kitTitle: "A Wattasid Warrior's Kit",
+                kit: `
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">⚔️</span><p class="mt-2 font-semibold">Saber & Lance</p><p class="text-sm text-gray-500">Primary cavalry weapons.</p></div>
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">🏹</span><p class="mt-2 font-semibold">Crossbow</p><p class="text-sm text-gray-500">Used by elite mounted units.</p></div>
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">🛡️</span><p class="mt-2 font-semibold">Round Shield</p><p class="text-sm text-gray-500">Common personal defense.</p></div>
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">🏰</span><p class="mt-2 font-semibold">Bombard</p><p class="text-sm text-gray-500">Heavy, slow siege artillery.</p></div>
+                `,
+                swTitle: 'Strengths & Weaknesses',
+                sw: `
+                    <div class="mb-4">
+                        <h4 class="font-bold text-lg text-green-600">Strengths</h4>
+                        <ul class="list-disc list-inside text-gray-700"><li>Experienced in traditional cavalry warfare.</li><li>Inherited historical legitimacy from Marinids.</li></ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-red-600">Weaknesses</h4>
+                        <ul class="list-disc list-inside text-gray-700"><li>Technologically obsolete (few firearms).</li><li>Unreliable funding and fickle tribal loyalties.</li><li>Perceived as politically and religiously illegitimate.</li></ul>
+                    </div>
+                `,
+                chartData: [8, 6, 4, 3, 4, 3]
+            },
+            saadian: {
+                compositionTitle: 'Saadian Force: The New Model Army',
+                composition: `
+                    <div class="border-l-4 border-red-500 pl-4 mb-4">
+                        <h4 class="font-bold text-lg">Professional Standing Army</h4>
+                        <p class="text-gray-600">The core of the force. Salaried, disciplined soldiers funded by a new centralized tax system. Highly loyal to the state.</p>
+                    </div>
+                    <div class="border-l-4 border-red-500 pl-4 mb-4">
+                        <h4 class="font-bold text-lg">Diverse Recruits</h4>
+                        <p class="text-gray-600">Composed of loyal tribes, Andalusi refugees, Turkish officers, and European renegades, creating a force loyal to the Sultan, not a single tribe.</p>
+                    </div>
+                    <div class="border-l-4 border-red-500 pl-4">
+                        <h4 class="font-bold text-lg">Gunpowder Corps</h4>
+                        <p class="text-gray-600">The heart of the army. Featured large numbers of infantry and mounted arquebusiers, along with a modern, mobile artillery train.</p>
+                    </div>
+                `,
+                kitTitle: "A Saadian Soldier's Kit",
+                kit: `
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">💥</span><p class="mt-2 font-semibold">Arquebus</p><p class="text-sm text-gray-500">Core infantry & cavalry firearm.</p></div>
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">💣</span><p class="mt-2 font-semibold">Mobile Cannon</p><p class="text-sm text-gray-500">Domestically produced, used in sieges & field battles.</p></div>
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">⚔️</span><p class="mt-2 font-semibold">Saber</p><p class="text-sm text-gray-500">Still a key sidearm.</p></div>
+                    <div class="bg-gray-100 p-4 rounded-lg"><span class="text-4xl">🧥</span><p class="mt-2 font-semibold">Kaftan</p><p class="text-sm text-gray-500">Ottoman-style attire for elite troops.</p></div>
+                `,
+                swTitle: 'Strengths & Weaknesses',
+                sw: `
+                    <div class="mb-4">
+                        <h4 class="font-bold text-lg text-green-600">Strengths</h4>
+                        <ul class="list-disc list-inside text-gray-700"><li>Technological superiority (firearms & artillery).</li><li>Disciplined professional core and unified command.</li><li>Powerful ideology and robust financial base.</li></ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-red-600">Weaknesses</h4>
+                        <ul class="list-disc list-inside text-gray-700"><li>Potential for revolts over new taxes.</li><li>Reliance on foreign experts could be a vulnerability.</li></ul>
+                    </div>
+                `,
+                chartData: [6, 8, 9, 9, 8, 9]
+            }
+        };
+
+        const timelineData = [
+            { year: '1524', event: 'Saadians capture Marrakesh, establishing a southern capital and a strong base of operations.' },
+            { year: '1536', event: 'Battle of Wadi al-\'Abid. The Saadian army decisively defeats the Wattasid forces, signaling a major shift in military power.' },
+            { year: '1541', event: 'Saadians capture the Portuguese stronghold of Agadir. A massive propaganda and military victory that cements their status as leaders of the jihad.' },
+            { year: '1549', event: 'Saadians conquer the Wattasid capital of Fez, effectively ending the Wattasid dynasty\'s control over Morocco.' },
+            { year: '1554', event: 'Battle of Tadla. The last Wattasid ruler, Ali Abu Hassun, is defeated and killed, leaving the Saadians as undisputed masters of Morocco.' },
+        ];
+
+        const clothingData = {
+            elite: [
+                { name: 'Kaftan', desc: 'A long, one-piece robe, open at the front. A key marker of wealth, often made of luxurious fabrics. Elite men favored dark blue English wool.', icon: '🧥' },
+                { name: 'Takchita', desc: 'A two-piece women\'s outfit, consisting of a base kaftan under an ornate over-dress. Popularized by Sultan Ahmed al-Mansour.', icon: '👘' },
+                { name: 'Jabador', desc: 'An ensemble of a loose-fitting tunic and matching baggy trousers (*sarwal*). Evolved from everyday wear to a status symbol for male notables.', icon: '👕' },
+                { name: 'Djellaba', desc: 'A long, hooded outer robe. While worn by all classes, those made of fine white wool were associated with the aristocracy.', icon: '겉' }
+            ],
+            commoner: [
+                { name: 'Haik', desc: 'A large rectangular piece of wool fabric (approx. 5m x 1.6m) draped to cover the body. The essential outer garment for modesty and protection in rural areas like Doukkala.', icon: '🧣' },
+                { name: 'Qamīṣ', desc: 'A simple, loose-fitting tunic or shirt worn as a foundational garment by all classes, made of durable linen or wool for commoners.', icon: '🥼' },
+                { name: 'Sarwal', desc: 'Loose, baggy trousers. A practical and universal garment, made from rough, locally produced fabrics for peasants and farmers.', icon: '👖' },
+                { name: 'Babouche', desc: 'Soft, heelless leather slippers. The standard, practical footwear for both men and women in all settings.', icon: '🥿' }
+            ]
+        };
+
+        function handleNav(e) {
+            e.preventDefault();
+            const targetId = e.target.getAttribute('href').substring(1);
+
+            navLinks.forEach(link => link.classList.remove('active'));
+            e.target.classList.add('active');
+
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === targetId) {
+                    section.classList.add('active');
+                }
+            });
+        }
+
+        navLinks.forEach(link => link.addEventListener('click', handleNav));
+
+        const wattasidToggle = document.getElementById('wattasid-toggle');
+        const saadianToggle = document.getElementById('saadian-toggle');
+        let armyChart;
+
+        function updateArmyView(dynasty) {
+            const data = armyData[dynasty];
+            document.getElementById('army-composition-title').textContent = data.compositionTitle;
+            document.getElementById('army-composition-content').innerHTML = data.composition;
+            document.getElementById('army-kit-title').textContent = data.kitTitle;
+            document.getElementById('army-kit-content').innerHTML = data.kit;
+            document.getElementById('army-sw-title').textContent = data.swTitle;
+            document.getElementById('army-sw-content').innerHTML = data.sw;
+
+            if (armyChart) {
+                armyChart.data.datasets[0].data = data.chartData;
+                armyChart.data.datasets[0].label = dynasty.charAt(0).toUpperCase() + dynasty.slice(1) + ' Force';
+                armyChart.data.datasets[0].borderColor = dynasty === 'wattasid' ? 'rgba(59, 130, 246, 1)' : 'rgba(220, 38, 38, 1)';
+                armyChart.data.datasets[0].backgroundColor = dynasty === 'wattasid' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(220, 38, 38, 0.2)';
+                armyChart.update();
+            }
+
+            if (dynasty === 'wattasid') {
+                wattasidToggle.classList.add('active');
+                saadianToggle.classList.remove('active');
+            } else {
+                saadianToggle.classList.add('active');
+                wattasidToggle.classList.remove('active');
+            }
+        }
+
+        function createArmyChart() {
+            const ctx = document.getElementById('armyComparisonChart').getContext('2d');
+            const data = {
+                labels: ['Cavalry', 'Firearms', 'Artillery', 'Technology', 'Discipline', 'Funding'],
+                datasets: [{
+                    label: 'Wattasid Host',
+                    data: armyData.wattasid.chartData,
+                    fill: true,
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgb(59, 130, 246)',
+                    pointBackgroundColor: 'rgb(59, 130, 246)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(59, 130, 246)'
+                }]
+            };
+            const config = {
+                type: 'radar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    family: "'Mulish', sans-serif"
+                                },
+                                color: '#4A5568'
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: 'rgba(0,0,0,0.5)',
+                                stepSize: 2,
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 16,
+                                    family: "'Marcellus', serif"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            armyChart = new Chart(ctx, config);
+        }
+
+        wattasidToggle.addEventListener('click', () => updateArmyView('wattasid'));
+        saadianToggle.addEventListener('click', () => updateArmyView('saadian'));
+
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.clothing-tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    if (content.id === targetTab) {
+                        content.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+
+        function populateClothing() {
+            const eliteContainer = document.getElementById('elite');
+            const commonerContainer = document.getElementById('commoner');
+
+            eliteContainer.innerHTML = clothingData.elite.map(item => `
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-5xl mb-4">${item.icon}</div>
+                    <h4 class="text-xl font-display mb-2">${item.name}</h4>
+                    <p class="text-gray-600">${item.desc}</p>
+                </div>
+            `).join('');
+
+            commonerContainer.innerHTML = clothingData.commoner.map(item => `
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <div class="text-5xl mb-4">${item.icon}</div>
+                    <h4 class="text-xl font-display mb-2">${item.name}</h4>
+                    <p class="text-gray-600">${item.desc}</p>
+                </div>
+            `).join('');
+        }
+        
+        function populateTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = timelineData.map((item, index) => `
+                <div class="timeline-point relative" data-event="${item.event}">
+                    <div class="absolute w-4 h-4 bg-gray-400 rounded-full left-1/2 -translate-x-1/2 mt-1.5"></div>
+                    <div class="${index % 2 === 0 ? 'text-left pr-8' : 'text-right pl-8'} w-1/2 ${index % 2 === 0 ? 'float-left' : 'float-right'}">
+                        <p class="text-lg font-bold font-display">${item.year}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            const points = document.querySelectorAll('.timeline-point');
+            const detailsBox = document.getElementById('timeline-details');
+            points.forEach(point => {
+                point.addEventListener('click', () => {
+                    points.forEach(p => p.classList.remove('highlighted'));
+                    point.classList.add('highlighted');
+                    detailsBox.innerHTML = `<h4 class="font-bold text-lg mb-2">${point.querySelector('p').textContent}</h4><p class="text-gray-700">${point.dataset.event}</p>`;
+                });
+            });
+        }
+
+        function drawFlags() {
+            function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+                let rot = Math.PI / 2 * 3;
+                let x = cx;
+                let y = cy;
+                let step = Math.PI / spikes;
+
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - outerRadius);
+                for (let i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                }
+                ctx.lineTo(cx, cy - outerRadius);
+                ctx.closePath();
+            }
+            
+            function draw8PointStar(ctx, cx, cy, size) {
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.beginPath();
+                for (let i = 0; i < 4; i++) {
+                    const angle = (i * Math.PI / 2) + Math.PI / 4;
+                    ctx.lineTo(size * Math.cos(angle), size * Math.sin(angle));
+                    ctx.lineTo(size * 0.5 * Math.cos(angle + Math.PI / 4), size * 0.5 * Math.sin(angle + Math.PI / 4));
+                }
+                ctx.closePath();
+                ctx.restore();
+            }
+            
+            // Wattasid Flag 1 (Red with Star)
+            let ctx = document.getElementById('wattasidFlag1').getContext('2d');
+            ctx.fillStyle = '#C53030'; // Red
+            ctx.fillRect(0, 0, 240, 160);
+            ctx.fillStyle = '#D69E2E'; // Gold
+            draw8PointStar(ctx, 120, 80, 50);
+            ctx.fill();
+
+            // Wattasid Flag 2 (White)
+            ctx = document.getElementById('wattasidFlag2').getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 240, 160);
+
+            // Saadian Flag 1 (White)
+            ctx = document.getElementById('saadianFlag1').getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 240, 160);
+            ctx.fillStyle = '#D69E2E';
+            ctx.font = '14px Marcellus';
+            ctx.textAlign = 'center';
+            ctx.fillText('"al-\'alam al-mansûr"', 120, 85);
+
+            // Saadian Flag 2 (Red with Star)
+            ctx = document.getElementById('saadianFlag2').getContext('2d');
+            ctx.fillStyle = '#C53030';
+            ctx.fillRect(0, 0, 240, 160);
+            ctx.fillStyle = '#D69E2E';
+            draw8PointStar(ctx, 120, 80, 50);
+            ctx.fill();
+        }
+
+        // Initializations
+        createArmyChart();
+        updateArmyView('wattasid');
+        populateClothing();
+        populateTimeline();
+        drawFlags();
+        document.querySelector('.tab-button[data-tab="elite"]').classList.add('active');
+        document.getElementById('elite').classList.remove('hidden');
+    });
+    </script>
+</body>
+</html>
