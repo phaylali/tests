@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16th Century Architecture of the Doukkala Plains</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F4F8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-chart-node {
+            border: 2px solid #003B73;
+            background-color: #E6F0FA;
+            color: #003B73;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flow-chart-arrow {
+            font-size: 2rem;
+            color: #0074D9;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#003B73] mb-2">A Tale of Three Architectures</h1>
+            <p class="text-lg md:text-xl text-[#0074D9]">The Contested Landscape of 16th Century Doukkala, Morocco</p>
+        </header>
+
+        <main class="space-y-12">
+            
+            <section id="introduction" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#003B73] mb-4">A Crossroads of Empires</h2>
+                <p class="text-base md:text-lg leading-relaxed text-gray-700">The 16th century in Morocco's Doukkala plains was an era of intense rivalry between the seafaring Portuguese Empire and the rising Saadian Sultanate. This conflict created a unique architectural landscape where European military design, sophisticated Moroccan artistry, and timeless local building traditions coexisted. This infographic explores the three distinct architectural paradigms that defined the region: the Fortress, the Riad, and the Tazota.</p>
+            </section>
+
+            <section id="timeline" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#003B73] mb-6 text-center">A Century of Transformation</h2>
+                <p class="text-center text-gray-700 mb-8 max-w-3xl mx-auto">The balance of power in 16th-century Doukkala was constantly shifting. The loss of key territories forced Portugal to consolidate its power, culminating in the construction of the massive Mazagan fortress—a direct architectural response to the Saadian military ascendancy.</p>
+                <div class="chart-container mx-auto" style="height: 450px;">
+                    <canvas id="timelineChart"></canvas>
+                </div>
+            </section>
+
+
+            <section id="comparison" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold text-[#003B73] mb-4">The Portuguese Fortress</h3>
+                    <p class="mb-4 text-gray-700">The Fortress of Mazagan was an architecture of imposition and defense. It was a piece of Renaissance Europe transplanted to Africa, designed to project military power and sustain a colonial community in isolation.</p>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="portugueseFeaturesChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold text-[#003B73] mb-4">The Saadian Riad</h3>
+                    <p class="mb-4 text-gray-700">In cities like Azemmour, the Saadian elite built inward-facing homes (*riads*) that were sanctuaries of privacy and opulent decoration, showcasing a rich Hispano-Moorish artistic heritage.</p>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="saadianFeaturesChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold text-[#003B73] mb-4">The Vernacular Tazota</h3>
+                    <p class="mb-4 text-gray-700">The rural plains gave rise to the *Tazota*, a unique structure built from fieldstones cleared for farming. This was an architecture of pure function and symbiosis with the land.</p>
+                     <div class="chart-container" style="height: 300px;">
+                        <canvas id="vernacularFeaturesChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="materials" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#003B73] mb-6 text-center">The Building Blocks of Culture</h2>
+                <p class="text-center text-gray-700 mb-8 max-w-3xl mx-auto">The materials used by each culture tell a story of their priorities and origins. The Portuguese relied on massive, imported-style masonry for defense, while the Saadians used a rich palette of decorative materials for internal beauty. The vernacular Tazota, in contrast, was built entirely from the local environment.</p>
+                <div class="chart-container mx-auto">
+                    <canvas id="materialsChart"></canvas>
+                </div>
+            </section>
+            
+            <section id="souk" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#003B73] mb-6 text-center">The Architecture of Commerce: Anatomy of a Souk</h2>
+                <p class="text-center text-gray-700 mb-10 max-w-3xl mx-auto">The 16th-century Moroccan souk was not a single building but a highly organized urban system. Its layout followed a strict hierarchy, with the most valuable goods located centrally near the mosque, creating a vibrant, structured commercial heart within the city.</p>
+                <div class="flex flex-col items-center space-y-4">
+                    <div class="flow-chart-node">🕌 Central Mosque (Spiritual & Civic Core)</div>
+                    <div class="flow-chart-arrow">↓</div>
+                    <div class="flow-chart-node bg-[#BFD7ED] border-[#0074D9]">Most Valuable Trades (Gold, Perfumes, Manuscripts)</div>
+                    <div class="flow-chart-arrow">↓</div>
+                    <div class="flow-chart-node">Specialized Guilds (Spices, Textiles, Leather)</div>
+                    <div class="flow-chart-arrow">↓</div>
+                    <div class="flow-chart-node bg-[#BFD7ED] border-[#0074D9]">"Noisier" Trades (Blacksmiths, Potters, Dyers)</div>
+                    <div class="flow-chart-arrow">↓</div>
+                    <div class="flow-chart-node">City Gates (Connection to Trade Routes)</div>
+                </div>
+            </section>
+
+            <section id="map" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-[#003B73] mb-6 text-center">Mapping the Contested Coast</h2>
+                <p class="text-center text-gray-700 mb-8 max-w-3xl mx-auto">This representation, inspired by the 1606 map by Jodocus Hondius, shows how European cartographers viewed the region. The map emphasizes coastal strongholds like Mazagan and Azemmour, which were vital for trade, while the Moroccan-controlled interior remains largely undefined—a testament to the limits of European influence.</p>
+                <div class="bg-[#E6F0FA] p-4 rounded-lg shadow-inner">
+                    <div class="w-full h-96 bg-cover bg-center rounded" style="background-image: url('https://placehold.co/1200x600/BFD7ED/003B73?text=Map+of+Doukkala+Coast+c.1606'); position: relative;">
+                        <div class="absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2 bg-white/80 p-2 rounded shadow-lg">
+                            <p class="font-bold text-[#003B73]">📍 Mazagam (Fortress)</p>
+                            <p class="text-sm text-gray-700">Portuguese Bastion</p>
+                        </div>
+                         <div class="absolute top-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2 bg-white/80 p-2 rounded shadow-lg">
+                            <p class="font-bold text-[#003B73]">📍 Azamor</p>
+                            <p class="text-sm text-gray-700">Saadian City</p>
+                        </div>
+                        <div class="absolute top-2/3 left-2/3 transform -translate-x-1/2 -translate-y-1/2 bg-white/80 p-2 rounded shadow-lg">
+                            <p class="font-bold text-[#003B73]">📍 Saffi</p>
+                            <p class="text-sm text-gray-700">Trading Port</p>
+                        </div>
+                        <div class="absolute bottom-1/4 right-1/4 transform -translate-x-1/2 -translate-y-1/2 bg-white/80 p-2 rounded shadow-lg">
+                            <p class="font-bold text-[#003B73]">❔ Unnamed Villages</p>
+                            <p class="text-sm text-gray-700">Tazota Territory</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 pt-6 border-t border-gray-300">
+            <p class="text-gray-600">Infographic created based on research into 16th-century Moroccan architecture. Visualizations by Chart.js. Design by Canvas Infographics.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const colorPalette = {
+            primary: '#003B73', 
+            secondary: '#0074D9', 
+            accent1: '#7FDBFF', 
+            accent2: '#BFD7ED',
+            background: '#F0F4F8',
+            text: '#333333'
+        };
+
+        function wrapLabel(str, maxWidth) {
+            if (str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 < maxWidth) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const tooltipTitleCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        new Chart(timelineCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1505: Portuguese take Safi', '1514: First Mazagan Citadel', '1525: Saadians take Marrakech', '1541: Saadians take Agadir', '1541-1548: Mazagan Fortress Built', '1578: Battle of Three Kings'],
+                datasets: [{
+                    label: 'Key Events',
+                    data: [10, 20, 30, 40, 50, 60],
+                    backgroundColor: [colorPalette.secondary, colorPalette.accent1, colorPalette.primary, colorPalette.secondary, colorPalette.primary, colorPalette.accent1],
+                    borderColor: colorPalette.primary,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                 ...tooltipTitleCallback,
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: false,
+                    },
+                    y: {
+                        ticks: {
+                            color: colorPalette.text,
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Timeline of Key 16th Century Events',
+                        font: { size: 18, weight: 'bold' },
+                        color: colorPalette.primary
+                    }
+                }
+            }
+        });
+
+        const portugueseFeaturesCtx = document.getElementById('portugueseFeaturesChart').getContext('2d');
+        new Chart(portugueseFeaturesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Military Design', 'Manueline Style', 'Defensive Walls', 'Isolation'],
+                datasets: [{
+                    data: [40, 25, 25, 10],
+                    backgroundColor: [colorPalette.primary, colorPalette.secondary, colorPalette.accent2, colorPalette.accent1],
+                }]
+            },
+            options: {
+                 ...tooltipTitleCallback,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Core Concepts',
+                        font: { size: 16, weight: 'bold' },
+                        color: colorPalette.primary
+                    }
+                }
+            }
+        });
+
+        const saadianFeaturesCtx = document.getElementById('saadianFeaturesChart').getContext('2d');
+        new Chart(saadianFeaturesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Interior Focus', 'Zellij & Stucco', 'Central Courtyard', 'Privacy (Hurma)'],
+                datasets: [{
+                    data: [35, 30, 25, 10],
+                    backgroundColor: [colorPalette.primary, colorPalette.secondary, colorPalette.accent2, colorPalette.accent1],
+                }]
+            },
+            options: {
+                 ...tooltipTitleCallback,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Core Concepts',
+                        font: { size: 16, weight: 'bold' },
+                        color: colorPalette.primary
+                    }
+                }
+            }
+        });
+
+        const vernacularFeaturesCtx = document.getElementById('vernacularFeaturesChart').getContext('2d');
+        new Chart(vernacularFeaturesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Symbiosis w/ Land', 'Dry-Stone', 'Function-driven', 'Thermal Inertia'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: [colorPalette.primary, colorPalette.secondary, colorPalette.accent2, colorPalette.accent1],
+                }]
+            },
+            options: {
+                 ...tooltipTitleCallback,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Core Concepts',
+                        font: { size: 16, weight: 'bold' },
+                        color: colorPalette.primary
+                    }
+                }
+            }
+        });
+
+        const materialsCtx = document.getElementById('materialsChart').getContext('2d');
+        const originalLabels = ['Portuguese: Cut Stone & Masonry', 'Saadian: Zellij, Stucco, Cedarwood, Marble', 'Vernacular: Fieldstone (Dry-stone)'];
+        new Chart(materialsCtx, {
+            type: 'bar',
+            data: {
+                labels: originalLabels.map(label => wrapLabel(label, 20)),
+                datasets: [{
+                    label: 'Architectural Style',
+                    data: [8, 10, 6],
+                    backgroundColor: [colorPalette.secondary, colorPalette.primary, colorPalette.accent1],
+                    borderColor: colorPalette.primary,
+                    borderWidth: 1,
+                    barThickness: 50,
+                }]
+            },
+            options: {
+                ...tooltipTitleCallback,
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false
+                    },
+                    x: {
+                       ticks: {
+                            color: colorPalette.text,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    ...tooltipTitleCallback.plugins,
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Primary Construction Materials by Culture',
+                        font: { size: 18, weight: 'bold' },
+                        color: colorPalette.primary
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
