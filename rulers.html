@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sharifian Crown: An Interactive History of Morocco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Earth Tones -->
+    <!-- Application Structure Plan: The application is structured as a single-page interactive dashboard. The primary navigation is a horizontal timeline of dynasties at the top. Clicking a dynasty dynamically updates the main content area below, which includes a dynasty overview, an interactive ruler chart (Chart.js), a conceptual map, and key insights. This non-linear, hub-and-spoke model was chosen to make a vast amount of historical data digestible and user-driven, allowing exploration by period rather than forcing a linear reading. A special, visually distinct section focuses on the 16th century, using narrative and animated elements to create a more immersive "story mode" for this pivotal era, enhancing engagement. -->
+    <!-- Visualization & Content Choices: 
+        - Dynastic Timeline (Goal: Organize/Navigate): An interactive HTML/CSS timeline to select a period. Interaction: Click. Justification: Provides a clear, high-level overview and acts as the main navigation hub.
+        - Ruler Reigns (Goal: Compare/Inform): Chart.js horizontal bar chart. Interaction: Hover for details. Justification: Visually compares reign lengths and succession within a dynasty more effectively than a table.
+        - Territorial Maps (Goal: Inform/Compare): Conceptual maps built with styled HTML/CSS divs. Interaction: Hover for labels. Justification: Provides a simplified visual representation of territorial control without relying on static images or complex SVG, adhering to constraints. For the Wattasid/Saadian split, a side-by-side layout clearly shows the division.
+        - Battle of the Three Kings (Goal: Explain Change): An animated sequence using HTML/CSS/JS. Interaction: Click to advance steps. Justification: Dynamically illustrates complex troop movements, making the battle's progression easier to understand than static text.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF5;
+            color: #4A4A4A;
+        }
+        .bg-primary { background-color: #FDFBF5; }
+        .bg-secondary { background-color: #F4EADD; }
+        .bg-accent { background-color: #D8C3A5; }
+        .text-header { color: #8E8D8A; }
+        .text-body { color: #4A4A4A; }
+        .border-accent { border-color: #D8C3A5; }
+        .timeline-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .timeline-item.active {
+            background-color: #B0926A;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .timeline-item:hover:not(.active) {
+            background-color: #EAE0D5;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 60vh;
+            }
+        }
+        .map-container {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            border: 2px solid #D8C3A5;
+            background-color: #F4EADD;
+            position: relative;
+        }
+        .map-zone {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            padding: 4px;
+            transition: all 0.3s ease;
+        }
+        .map-zone .zone-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .map-zone:hover .zone-label {
+            opacity: 1;
+        }
+        .battle-map {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            background-color: #C8E6C9;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #81C784;
+        }
+        .army {
+            position: absolute;
+            transition: all 1.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        .river {
+            position: absolute;
+            background-color: #90CAF9;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-header">The Sharifian Crown</h1>
+            <p class="text-lg text-body mt-2 max-w-3xl mx-auto">An interactive journey through the dynasties that shaped Morocco, from the 8th century to the present day.</p>
+        </header>
+
+        <nav id="timeline-nav" class="mb-8 overflow-x-auto pb-4">
+            <div class="flex space-x-2 md:space-x-4 justify-center min-w-max">
+            </div>
+        </nav>
+
+        <main id="main-content">
+        </main>
+
+        <footer class="text-center mt-12 pt-4 border-t border-accent">
+            <p class="text-sm text-gray-500">A dynamic visualization of Moroccan history. All content derived from the report "The Sharifian Crown: A Dynastic and Territorial History of Morocco."</p>
+        </footer>
+    </div>
+
+    <script>
+        const historicalData = {
+            idrisids: {
+                title: "Idrisid Dynasty",
+                period: "788–974",
+                summary: "The Idrisids founded the first autonomous Islamic state in Morocco, establishing a legacy of Sharifian legitimacy that would define the nation's political identity. They founded the city of Fez, which became the kingdom's cultural and religious heart. The dynasty's power waned after the realm was divided among heirs, eventually succumbing to pressure from the larger Fatimid and Umayyad empires.",
+                map: {
+                    title: "Idrisid Realm (c. 820)",
+                    description: "At its zenith under Idris II, the realm unified much of modern Morocco. However, significant regions like the Barghawata Confederacy on the coast and the Sijilmasa Emirate in the south remained independent. After 828, the unified realm fractured into smaller principalities.",
+                    zones: [
+                        { name: "Idrisid Core", style: "top: 10%; left: 15%; width: 70%; height: 70%; background-color: #8E8D8A;" },
+                        { name: "Barghawata", style: "top: 30%; left: 2%; width: 10%; height: 40%; background-color: #B0926A;" },
+                        { name: "Nekor", style: "top: 2%; left: 40%; width: 20%; height: 8%; background-color: #B0926A;" },
+                        { name: "Sijilmasa", style: "bottom: 5%; right: 10%; width: 30%; height: 15%; background-color: #B0926A;" }
+                    ]
+                },
+                rulers: [
+                    { name: "Idris I", start: 788, end: 791 },
+                    { name: "Idris II", start: 791, end: 828 },
+                    { name: "Muhammad ibn Idris", start: 828, end: 836 },
+                    { name: "Ali I", start: 836, end: 849 },
+                    { name: "Yahya I", start: 849, end: 864 },
+                    { name: "Yahya II", start: 864, end: 866 },
+                    { name: "Ali II", start: 866, end: 883 },
+                    { name: "Yahya III", start: 883, end: 904 },
+                    { name: "Yahya IV", start: 904, end: 917 },
+                    { name: "Hasan I al-Hajjam", start: 925, end: 927 },
+                    { name: "Al-Qasim Gannun", start: 938, end: 948 },
+                    { name: "Abul-Aish Ahmad", start: 948, end: 954 },
+                    { name: "Hasan II", start: 954, end: 974 }
+                ]
+            },
+            berber_empires: {
+                title: "Berber Empires",
+                period: "1040–1269",
+                summary: "Two successive Berber empires, the Almoravids and Almohads, forged a vast Hispano-Maghrebi empire. The Almoravids, originating from the Sahara, united Morocco and al-Andalus. They were succeeded by the Almohads, a religious movement from the High Atlas, who expanded the empire to its greatest extent, controlling all of North Africa from the Atlantic to Libya. This era was a golden age of cultural exchange and architectural splendor.",
+                map: {
+                    title: "Almohad Empire (c. 1212)",
+                    description: "The Almohad Empire was the largest state ever ruled from Morocco. It encompassed the entire Maghreb and a significant portion of the Iberian Peninsula, creating a dominant power in the western Mediterranean.",
+                    zones: [
+                        { name: "Almohad Empire", style: "top: 5%; left: 5%; width: 90%; height: 90%; background-color: #8E8D8A;" }
+                    ]
+                },
+                rulers: [
+                    { name: "Yusuf ibn Tashfin (Almoravid)", start: 1072, end: 1106 },
+                    { name: "Ali ibn Yusuf (Almoravid)", start: 1106, end: 1143 },
+                    { name: "Abd al-Mu'min (Almohad)", start: 1133, end: 1163 },
+                    { name: "Abu Yaqub Yusuf I (Almohad)", start: 1163, end: 1184 },
+                    { name: "Yaqub al-Mansur (Almohad)", start: 1184, end: 1199 },
+                    { name: "Muhammad al-Nasir (Almohad)", start: 1199, end: 1213 },
+                    { name: "Yusuf II al-Mustansir (Almohad)", start: 1213, end: 1224 },
+                    { name: "Later Almohads (Decline)", start: 1224, end: 1269 }
+                ]
+            },
+            marinids: {
+                title: "Marinid Dynasty",
+                period: "1244–1465",
+                summary: "Rising from the ashes of the Almohad Empire, the Marinids, a Zenata Berber tribe, established their capital in Fez. While their political power never matched their predecessors, they were immense cultural patrons, responsible for building the magnificent madrasas that are masterpieces of Hispano-Moorish art. Chronic instability and the rise of their Wattasid viziers eventually led to their decline.",
+                map: {
+                    title: "Marinid Sultanate (c. 1360)",
+                    description: "The Marinid realm was centered on modern Morocco. They intermittently controlled parts of Algeria and held footholds in Spain to support the Emirate of Granada, but their empire was more regional than the vast Almohad Caliphate.",
+                    zones: [
+                        { name: "Marinid Sultanate", style: "top: 15%; left: 10%; width: 75%; height: 70%; background-color: #8E8D8A;" },
+                        { name: "Zayyanid Kingdom", style: "top: 20%; right: 2%; width: 15%; height: 50%; background-color: #B0926A;" },
+                        { name: "Emirate of Granada", style: "top: 2%; left: 35%; width: 15%; height: 8%; background-color: #B0926A;" }
+                    ]
+                },
+                rulers: [
+                    { name: "Abu Yahya", start: 1244, end: 1258 },
+                    { name: "Abu Yusuf Yaqub", start: 1258, end: 1286 },
+                    { name: "Abu Yaqub Yusuf", start: 1286, end: 1307 },
+                    { name: "Abu Said Uthman II", start: 1310, end: 1331 },
+                    { name: "Abu al-Hasan Ali", start: 1331, end: 1351 },
+                    { name: "Abu Inan Faris", start: 1348, end: 1358 },
+                    { name: "Period of Anarchy", start: 1358, end: 1398 },
+                    { name: "Abu Said Uthman III", start: 1398, end: 1420 },
+                    { name: "Abd al-Haqq II", start: 1420, end: 1465 }
+                ]
+            },
+            saadian_wattasid: {
+                title: "Wattasid-Saadian Era",
+                period: "1472–1659",
+                summary: "This tumultuous period saw the decline of the Wattasids and the rise of the Saadians from the south. The Saadians championed a jihad against Portuguese coastal enclaves, unifying Morocco and culminating in the legendary Battle of the Three Kings. The subsequent reign of Ahmad al-Mansur was a golden age of wealth and power, followed by a devastating civil war that fractured the kingdom.",
+                map: {
+                    title: "Morocco Divided (c. 1530)",
+                    description: "Following the Treaty of Tadla (1527), Morocco was officially partitioned. The Wattasids ruled the north from Fez, while the ascendant Saadians controlled the south from Marrakesh. Along the coast, Portuguese fortresses exerted foreign control over key ports.",
+                    zones: [
+                        { name: "Wattasid Sultanate", style: "top: 5%; left: 10%; width: 80%; height: 45%; background-color: #8E8D8A;" },
+                        { name: "Saadian Principality", style: "bottom: 5%; left: 10%; width: 80%; height: 45%; background-color: #6c6b69;" },
+                        { name: "Portuguese Forts", style: "top: 10%; left: 2%; width: 5%; height: 80%; background-color: #D9534F;" }
+                    ]
+                },
+                rulers: [
+                    { name: "Muhammad al-Shaykh (Wattasid)", start: 1472, end: 1504 },
+                    { name: "Muhammad al-Burtuqali (Wattasid)", start: 1504, end: 1526 },
+                    { name: "Ahmad al-Araj (Saadian)", start: 1517, end: 1544 },
+                    { name: "Muhammad al-Shaykh (Saadian)", start: 1544, end: 1557 },
+                    { name: "Abdallah al-Ghalib (Saadian)", start: 1557, end: 1574 },
+                    { name: "Abd al-Malik I (Saadian)", start: 1576, end: 1578 },
+                    { name: "Ahmad al-Mansur (Saadian)", start: 1578, end: 1603 },
+                    { name: "Saadian Civil War", start: 1603, end: 1627 },
+                    { name: "Later Saadians (Decline)", start: 1627, end: 1659 }
+                ],
+                spotlight: {
+                    title: "A Life in 16th-Century Morocco",
+                    intro: "To understand this pivotal century, we follow the fictional life of Zaynab bint Yusuf (1505-1578), an Andalusian refugee who witnessed the fall of one dynasty, the rise of another, and the epic Battle of the Three Kings. Her story provides a human lens on the era's profound transformations.",
+                    battle: {
+                        title: "The Battle of the Three Kings (1578)",
+                        description: "This legendary battle near Ksar el-Kebir pitted the Moroccan army of Sultan Abd al-Malik against an invading Portuguese force led by King Sebastian I, who sought to install the deposed Moroccan sultan al-Mutawakkil. Click through the steps to see how the battle unfolded.",
+                        steps: [
+                            {
+                                text: "Initial Setup: The massive Portuguese army forms a slow-moving defensive square. The larger, more mobile Moroccan army deploys in a crescent formation, planning to envelop the enemy.",
+                                positions: {
+                                    portuguese: { top: '35%', left: '10%' },
+                                    moroccan: { top: '35%', left: '70%' }
+                                }
+                            },
+                            {
+                                text: "Moroccan Advance: The Moroccan cavalry wings sweep around the flanks of the Portuguese square, while the center engages the front.",
+                                positions: {
+                                    portuguese: { top: '35%', left: '25%' },
+                                    moroccan: { top: '35%', left: '55%' }
+                                }
+                            },
+                            {
+                                text: "Encirclement: The Moroccan cavalry successfully attacks the rear, completely surrounding the Portuguese army. The nearby river prevents any retreat.",
+                                positions: {
+                                    portuguese: { top: '40%', left: '45%' },
+                                    moroccan: { top: '40%', left: '45%' }
+                                }
+                            },
+                            {
+                                text: "Aftermath: The trapped Portuguese army disintegrates. All three kings die in the battle, a stunning victory that secures Moroccan independence but triggers a succession crisis in Portugal.",
+                                positions: {
+                                    portuguese: { top: '50%', left: '50%', opacity: 0 },
+                                    moroccan: { top: '40%', left: '45%' }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            alaouites: {
+                title: "Alaouite Dynasty",
+                period: "1631–Present",
+                summary: "Rising from the Tafilalt oasis amidst the chaos of the Saadian collapse, the Alaouites are the current ruling dynasty of Morocco. Figures like Mawlay Ismail consolidated the state with a powerful professional army. The dynasty navigated intense European colonial pressure, culminating in the French and Spanish protectorates, before leading the country back to independence in 1956. Today, the Alaouite monarchy continues to rule under King Mohammed VI.",
+                map: {
+                    title: "Alaouite Sultanate (18th-19th C.)",
+                    description: "Pre-colonial Alaouite rule was characterized by two zones: 'Bled el-Makhzen' (land of government), where the Sultan's authority was direct, and 'Bled es-Siba' (land of dissidence), mountainous regions where tribes recognized the Sultan's spiritual authority but resisted direct administration.",
+                    zones: [
+                        { name: "Bled el-Makhzen (Direct Rule)", style: "top: 10%; left: 5%; width: 40%; height: 80%; background-color: #8E8D8A;" },
+                        { name: "Bled es-Siba (Autonomous Tribes)", style: "top: 10%; right: 5%; width: 50%; height: 80%; background-color: #B0926A;" }
+                    ]
+                },
+                rulers: [
+                    { name: "Al-Rashid", start: 1664, end: 1672 },
+                    { name: "Mawlay Ismail", start: 1672, end: 1727 },
+                    { name: "Period of Anarchy", start: 1727, end: 1757 },
+                    { name: "Mohammed III", start: 1757, end: 1790 },
+                    { name: "Sulayman", start: 1792, end: 1822 },
+                    { name: "Abd al-Rahman", start: 1822, end: 1859 },
+                    { name: "Mohammed IV", start: 1859, end: 1873 },
+                    { name: "Hassan I", start: 1873, end: 1894 },
+                    { name: "Abdelaziz", start: 1894, end: 1908 },
+                    { name: "Yusef", start: 1912, end: 1927 },
+                    { name: "Mohammed V", start: 1927, end: 1961 },
+                    { name: "Hassan II", start: 1961, end: 1999 },
+                    { name: "Mohammed VI", start: 1999, end: 2025 }
+                ]
+            }
+        };
+
+        const timelineNav = document.getElementById('timeline-nav').firstElementChild;
+        const mainContent = document.getElementById('main-content');
+        let rulerChart = null;
+
+        function createRulerChart(rulers) {
+            const chartContainer = document.getElementById('ruler-chart-container');
+            if (!chartContainer) return;
+
+            const canvas = document.getElementById('rulerChart');
+            const ctx = canvas.getContext('2d');
+
+            if (rulerChart) {
+                rulerChart.destroy();
+            }
+
+            const labels = rulers.map(r => r.name);
+            const data = rulers.map(r => ({
+                x: [r.start, r.end],
+                y: r.name
+            }));
+            
+            const backgroundColors = [
+                'rgba(142, 141, 138, 0.7)',
+                'rgba(176, 146, 106, 0.7)',
+                'rgba(216, 195, 165, 0.7)',
+                'rgba(112, 128, 144, 0.7)',
+                'rgba(132, 112, 88, 0.7)'
+            ];
+
+            rulerChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Reign Period',
+                        data: data,
+                        backgroundColor: (context) => backgroundColors[context.dataIndex % backgroundColors.length],
+                        borderColor: (context) => backgroundColors[context.dataIndex % backgroundColors.length].replace('0.7', '1'),
+                        borderWidth: 1,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            min: Math.min(...rulers.map(r => r.start)) - 10,
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                autoSkip: false,
+                                callback: function(value, index, values) {
+                                    const label = this.getLabelForValue(value);
+                                    return label.length > 20 ? label.substring(0, 18) + '...' : label;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const d = context.raw;
+                                    return `${context.label}: ${d.x[0]} - ${d.x[1]}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBattleAnimation(battleData) {
+            const container = document.getElementById('battle-animation');
+            if (!container) return;
+
+            const map = document.createElement('div');
+            map.className = 'battle-map mx-auto rounded-lg';
+            
+            const river = document.createElement('div');
+            river.className = 'river';
+            river.style.cssText = 'left: 0; top: 85%; width: 100%; height: 15%;';
+            map.appendChild(river);
+
+            const portugueseArmy = document.createElement('div');
+            portugueseArmy.id = 'portuguese-army';
+            portugueseArmy.className = 'army bg-red-500 text-white';
+            portugueseArmy.textContent = '🇵🇹';
+            map.appendChild(portugueseArmy);
+
+            const moroccanArmy = document.createElement('div');
+            moroccanArmy.id = 'moroccan-army';
+            moroccanArmy.className = 'army bg-green-700 text-white';
+            moroccanArmy.textContent = '🇲🇦';
+            map.appendChild(moroccanArmy);
+
+            const description = document.createElement('p');
+            description.id = 'battle-step-text';
+            description.className = 'text-center mt-4 text-body';
+
+            const controls = document.createElement('div');
+            controls.className = 'text-center mt-4';
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next Step →';
+            nextButton.className = 'bg-accent hover:bg-opacity-80 text-white font-bold py-2 px-4 rounded';
+            controls.appendChild(nextButton);
+
+            container.innerHTML = '';
+            container.append(map, description, controls);
+
+            let currentStep = 0;
+
+            function updateBattleState(stepIndex) {
+                const step = battleData.steps[stepIndex];
+                description.textContent = step.text;
+                portugueseArmy.style.top = step.positions.portuguese.top;
+                portugueseArmy.style.left = step.positions.portuguese.left;
+                portugueseArmy.style.opacity = step.positions.portuguese.opacity !== undefined ? step.positions.portuguese.opacity : 1;
+                
+                moroccanArmy.style.top = step.positions.moroccan.top;
+                moroccanArmy.style.left = step.positions.moroccan.left;
+                moroccanArmy.style.opacity = step.positions.moroccan.opacity !== undefined ? step.positions.moroccan.opacity : 1;
+
+                if (stepIndex === battleData.steps.length - 1) {
+                    nextButton.textContent = 'Restart';
+                } else {
+                    nextButton.textContent = 'Next Step →';
+                }
+            }
+
+            nextButton.addEventListener('click', () => {
+                currentStep = (currentStep + 1) % battleData.steps.length;
+                updateBattleState(currentStep);
+            });
+
+            updateBattleState(0);
+        }
+        
+        function displayContent(dynastyKey) {
+            const data = historicalData[dynastyKey];
+            if (!data) return;
+
+            let spotlightHtml = '';
+            if (data.spotlight) {
+                spotlightHtml = `
+                    <div class="mt-12 p-6 bg-secondary rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold text-center text-header mb-2">${data.spotlight.title}</h3>
+                        <p class="text-center text-body mb-6 max-w-2xl mx-auto">${data.spotlight.intro}</p>
+                        <div class="bg-primary p-4 rounded-lg">
+                             <h4 class="text-xl font-bold text-center mb-2">${data.spotlight.battle.title}</h4>
+                             <p class="text-center text-sm text-gray-600 mb-4">${data.spotlight.battle.description}</p>
+                             <div id="battle-animation"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            mainContent.innerHTML = `
+                <section id="${dynastyKey}-content" class="content-section active space-y-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold text-header">${data.title} (${data.period})</h2>
+                        <p class="mt-2 text-lg max-w-3xl mx-auto text-body">${data.summary}</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="bg-secondary p-4 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-center mb-2 text-header">Territorial Control</h3>
+                            <p class="text-center text-sm text-gray-600 mb-4">${data.map.description}</p>
+                            <div class="map-container mx-auto rounded-lg">
+                                ${data.map.zones.map(zone => `<div class="map-zone rounded-md" style="${zone.style}"><span class="zone-label">${zone.name}</span></div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="bg-secondary p-4 rounded-lg shadow-md">
+                             <h3 class="text-xl font-bold text-center mb-4 text-header">Ruler Timeline</h3>
+                             <div id="ruler-chart-container" class="chart-container">
+                                <canvas id="rulerChart"></canvas>
+                             </div>
+                        </div>
+                    </div>
+                    ${spotlightHtml}
+                </section>
+            `;
+
+            createRulerChart(data.rulers);
+            if (data.spotlight) {
+                createBattleAnimation(data.spotlight.battle);
+            }
+        }
+
+        function setupTimeline() {
+            Object.keys(historicalData).forEach(key => {
+                const data = historicalData[key];
+                const item = document.createElement('div');
+                item.className = 'timeline-item p-3 md:p-4 rounded-lg shadow-md text-center bg-secondary';
+                item.dataset.key = key;
+                item.innerHTML = `<h3 class="font-bold text-sm md:text-base">${data.title}</h3><p class="text-xs md:text-sm">${data.period}</p>`;
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.timeline-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    displayContent(key);
+                });
+                timelineNav.appendChild(item);
+            });
+        }
+
+        window.addEventListener('load', () => {
+            setupTimeline();
+            const firstItem = timelineNav.querySelector('.timeline-item');
+            if (firstItem) {
+                firstItem.click();
+            }
+        });
+    </script>
+</body>
+</html>
